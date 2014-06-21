@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+       <link href="css/sitewatcher.css" rel="stylesheet" type="text/css">
+		<script src="js/jquery-1.10.2.js"></script>
+		<script src="js/jquery-ui-1.10.4.custom.min.js"></script>
+		<!-- End Pop Up Script -->
+		
+		<script src="js/respond.min.js"></script>
+		<script src="js/jquery.slicknav.js"></script>
+		<script src="js/sitewatcher.js"></script>
+		<script src="js/jquery.simplemodal-1.4.4.js"></script>
+			<script type="text/javascript">
+			function propertyList(){
+				$("#propName").empty();
+				$("#latestRecording").empty();
+				$("#priorRecording").empty();
+				
+				var res = window.jsinterface.getProperty();
+				var obj = JSON.parse(res);
+				$("#propertyInfo").show();
+				$.each(obj.dashboardModel.properties,function(key, value) {
+					var propName = value.name;
+					var propertyId = value.propertyId;
+					$("#propName").append('<span id="propertyName" >'+propName+'</span><br/>');
+					 if (!jQuery.isEmptyObject(obj.dashboardModel.recordingsLatestRecording[propertyId])) {
+							var recordingDate =obj.dashboardModel.recordingsLatestRecording[propertyId].recordingDate;
+							var recordingId = obj.dashboardModel.recordingsLatestRecording[propertyId].recordingId;
+							$("#propName").append('<div class="fluid info_details" id="latestRecording"> Latest Recording - '+recordingDate+'<a href="#" onClick="showRecordings('+recordingId+')"><img src="img/play_video.png" alt="" /></a></div>');
+					}
+						$.each(obj.dashboardModel.recordingsAllRecordings[propertyId],function(key, value) {
+							var recordingDate = value.recordingDate;
+							var recordingId = value.recordingId;
+							$("#propName").append('<div class="fluid info_details" id="priorRecording"> Recordings - '+recordingDate+'<a href="#" onClick="showRecordings('+recordingId+')"><img src="img/play_video.png" alt="" /></a></div><br/>');
+						});
+						
+				});
+				
+			}
+			function showRecordings(recordingId){
+				$("#view_image_div").empty();
+				$("#view_image_div1").empty();
+				var res = window.jsinterface.getPropertyRecordings(recordingId);
+				var returnData = JSON.parse(res);
+				if (returnData.status) {
+					var properties = returnData.recordingInfo;
+					var count = 1;
+					var firstUrl ='';
+					var firstImageType ='';
+					$.each(properties,	function(key, value) {
+						var imageType = value.recordingTypeId;
+						var url = value.fileLocation;
+						var isActive = value.isActive;
+						if(count == 1){
+							firstUrl = url;
+							firstImageType = imageType;
+						}
+						if (isActive) {
+							 if (imageType == 1	|| imageType == 2 || imageType == 3 || imageType == 4 || imageType == 5) {
+								 $("#view_image_div").append('<a href="#" onClick="showImage('+imageType+')"><img src="img/canstockphoto0297723_comp.jpg" width="60" height="60" border="1" style="border: 1" /><h5>Picture '+count+'</h5></a>');
+							} else {
+								$("#view_image_div1").append('<a href="#" onClick="showImage('+imageType+')"><video src="img/small.ogv" width="60" height="60" border="1" style="border: 1" /><h5>Video</h5></a>');
+							} 
+						}
+					$("#view_thumbNails").append('<img  id="imageTagId" src="" alt="" ></img>');
+					$("#view_thumbNails").append('<video id="videoTagId" style="display: none" width="550" controls="" autoplay></video>');
+					dashboardModalControl = renderModal('view_thumbNails', 'auto', 400);
+					showImage(firstImageType);
+					});
+					
+				}
+				
+			}
+			function showImage(imageType) {
+				if (imageType == 6) {
+					if (!!document.createElement('video').canPlayType) {
+						var extension = "";
+						if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) {
+							type = "video/ogg"
+							extension = ".ogv";
+						} else {
+							type = "video/mp4";
+							extension = ".mp4";
+						}
+						//url = url+extension;
+						$("#videoTagId").attr('type', type);
+						$("#videoTagId").attr('src', "img/small.ogv");
+						$('#videoTagId').show();
+						$('#imageTagId').hide();
+						$("#view_thumbNails").show();
+						dashboardModalControl = renderModal('view_thumbNails', 'auto', 400);
+					} else {
+						alert("Your browser doesn't support viewing of video. Please use a newer browser.");
+					}
+				}
+				if (imageType == 1 || imageType == 2 || imageType == 3 || imageType == 4 || imageType == 5){
+					$("#imageTagId").attr("src", "img/canstockphoto0297723_comp.jpg");
+					$("#view_thumbNails").show();
+					$('#imageTagId').show();
+					$('#videoTagId').hide();
+					dashboardModalControl = renderModal('view_thumbNails', 'auto', 400);
+				}
+			}  	
+			</script>
+    </head>
+    <body>
+	<center><div class="fluid pop_yellow_head">Dashboard</div></center>
+	<div class="fluid dash_section" id="AddPropertyBig">
+			<div class="fluid dash_section_head">Add a property</div>
+			<div class="fluid section_btns">
+				<a href="addproperty.html">
+				<img src="img/add_property_btn.png" alt="" style="cursor: pointer" />
+				</a>
+			</div>
+		</div>
+		<div class="fluid dash_section" id="ViewPropertyBig">
+			<div class="fluid dash_section_head">View Property</div>
+			<div class="fluid section_btns">
+				<a href="#" onClick="propertyList()">
+				<img src="img/view_property.png" alt="" style="cursor: pointer" />
+				</a>
+			</div>
+		</div>
+		
+		<div class="fluid info_out" id="propertyInfo" style="display: none;">
+		<div class="fluid pop_yellow_head">Property Information</div>
+				<div class="fluid info_details" id="propName">
+					
+				</div>
+			
+		</div>
+				
+				
+				
+		</div>
+		<div id="view_thumbNails" style="display: none;" class="fluid view_image_pop"><div class="fluid pop_yellow_head">Property Recordings</div>
+			<div id="view_image_div" class="fluid view_image_pop1"></div>
+			<div id="view_image_div1" class="fluid view_image_pop2"></div>
+    </body>
+</html>

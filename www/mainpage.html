@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <title>SiteWatcher</title>
+		<link href="css/sitewatcher.css" rel="stylesheet" type="text/css">
+		<script src="js/jquery-1.10.2.js"></script>
+		<script src="js/jquery-ui-1.10.4.custom.min.js"></script>
+		<!-- End Pop Up Script -->
+		
+		<script src="js/respond.min.js"></script>
+		<script src="js/jquery.slicknav.js"></script>
+		<script src="js/sitewatcher.js"></script>
+		<script src="js/jquery.simplemodal-1.4.4.js"></script>
+		<script type="text/javascript">
+		function validateSignInForm() {
+		$("#formError").empty();
+		var j_username = $("#j_username").val();
+		var j_password = $("#j_password").val();
+
+		var emailFormat = /^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-_]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/;
+		var passFormat = /((?=.*\d)(?=.*[A-Z]).{8,30})/;
+
+		if (j_username === null || j_username === "" || j_password === null
+				|| j_password === "") {
+			$("#formError").show();
+			$("#formError").html("Please enter all the values.");
+			return false;
+		}
+		if (!j_username.match(emailFormat)) {
+			$("#formError").show();
+			$("#formError").html("Please enter a valid email address.");
+			return false;
+		}
+
+		if (j_password.length < 8 || !j_password.match(passFormat)) {
+			$("#formError").show();
+			$("#formError").html("Please enter a valid password.");
+			return false;
+		}
+		var res = window.jsinterface.authenticateUser(j_username, j_password);
+		$("#j_username").val("");
+		 $("#j_password").val("");
+		if(res == "success"){
+			window.location.href = "dashboard.html";
+		} else {
+			window.location.href = "mainpage.html";
+			$("#formError").show();
+			$("#formError").html("Please enter a valid User name and password.");
+		}
+	}
+	</script>	
+    </head>
+    <body>
+	<h1>Welocome to Sitewatcher.</h1>
+	<div id="signInDiv" class="fluid sign_in1">
+		<center><div class="fluid pop_yellow_head">SignIn Form</div>
+			<div id="formError" class="fluid upload_alert_message"></div>
+			<input type="text" id="j_username" name="j_username"
+				value="ram@sw.com" placeholder="Email" class="fluid textbox_grey">
+			<input id="j_password" name="j_password" type="password"
+				value="Swpass123" placeholder="Password" class="fluid textbox_grey">
+			<div class="fluid pop_btn">
+				<a href="#" onClick="validateSignInForm()"> <img
+					src="img/signin_btn.png" alt="" style="cursor: pointer" />
+				</a>
+			</div>
+			<div id="forgot_pass_text" class="fluid forgotpass">
+			<a href="#" onClick="showForgotPassword()"> 
+				<span style="color: blue;">Forgot your password?</span>
+			</a>
+			</div>
+	</div>
+	<a href="dashboard.html">Next</a>
+    </body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <title>SiteWatcher</title>
+        <link href="css/sitewatcher.css" rel="stylesheet" type="text/css">
+		<script src="js/jquery-1.10.2.js"></script>
+		<script src="js/jquery-ui-1.10.4.custom.min.js"></script>
+		<!-- End Pop Up Script -->
+		
+		<script src="js/respond.min.js"></script>
+		<script src="js/jquery.slicknav.js"></script>
+		<script src="js/sitewatcher.js"></script>
+		<script src="js/jquery.simplemodal-1.4.4.js"></script>
+		<script type="text/javascript">
+		function validateSignUpForm() {
+		$("#formError1").empty();
+		var firstName = $("#firstName").val();
+		var lastName = $("#lastName").val();
+		var email = $("#email").val();
+		var password = $("#password").val();
+		var terms = $('#termsAccepted').is(':checked');
+		var passFormat = /((?=.*\d)(?=.*[A-Z]).{8,30})/;
+		var nameFormat = /^[a-zA-Z0-9\s\._\''-]{2,50}$/;
+		var emailFormat = /^[_A-Za-z0-9-]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-_]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/;
+
+		if (firstName === null || firstName === "" || lastName === null
+				|| lastName === "" || email === null || email === "") {
+			$("#formError1").show();
+			$("#formError1").html("Please enter all values");
+			return false;
+		}
+		if (!(firstName.match(nameFormat) && lastName.match(nameFormat))) {
+			$("#formError1").show();
+			$("#formError1")
+					.html(
+							"Please enter a valid first name. You may enter at least two alphabets and may not include special characters.");
+			return false;
+		}
+		if (!email.match(emailFormat)) {
+			$("#formError1").show();
+			$("#formError1").html("Please enter a valid email address.");
+			return false;
+		}
+		if (password === null || password === "") {
+			$("#formError1").show();
+			$("#formError1")
+					.html(
+							"Please create a password and accept the Terms and Conditions.");
+			return false;
+		}
+		if (password.length < 8) {
+			$("#formError1").show();
+			$("#formError1")
+					.html(
+							"Please enter a password that is at least 8 characters long.");
+			return false;
+		}
+		if (!password.match(passFormat)) {
+			$("#formError1").show();
+			$("#formError1")
+					.html(
+							"Please enter a password that contains at least 1 uppercase letter and 1 number.");
+			return false;
+		}
+		if(terms == false){
+			$("#formError1").show();
+			$("#formError1").html(
+					"Please ensure to accept terms and conditions.");
+			return false;
+		}
+	 var res = window.jsinterface.signUpUser(firstName, lastName, email, password);
+	 $("#firstName").val("");
+	 $("#lastName").val("");
+	 $("#email").val("");
+	 $("#password").val("");
+	 $('#termsAccepted').is(':Unchecked');
+	 alert(res);
+	 if(res == "success"){
+			window.location.href = "mainpage.html";
+		} else {
+			window.location.href = "signup.html";
+			$("#formError1").show();
+			$("#formError1").html("User Registration is failed please try again.");
+		}
+	}
+	</script>	
+    </head>
+    <body>
+	<h1>Welocome to Sitewatcher.</h1>
+	<div id="sign_up_div" class="fluid sign_up">
+		<div class="fluid pop_yellow_head">SignUp Form</div>
+		<form method="POST" id="signUpForm" name="signUpForm">
+			<div id="formError1" class="fluid upload_alert_message"></div>
+			<input type="text" id="firstName" name="firstName"
+				placeholder="First Name" class="fluid textbox_grey" tabindex="1">
+			<input type="text" id="lastName" name="lastName"
+				placeholder="Last Name" class="fluid textbox_grey" tabindex="2">
+			<input type="text" id="email" name="email" placeholder="Email"
+				value="Ram@sw.com" class="fluid textbox_grey" tabindex="3">
+			<input type="password" id="password" name="password"
+				value="Swpass123" placeholder="Password" class="fluid textbox_grey"
+				tabindex="4">
+			<div class="fluid agree">
+				<input type="checkbox" name="termsAccepted" id="termsAccepted">&nbsp;&nbsp;<a href="#" id="privacylink" onClick="showPrivacy()">I agree Sitewatcher Terms</a>
+			</div>
+			<div class="fluid pop_btn" tabindex="5">
+				<a href="#" onClick="validateSignUpForm()"> <img
+					src="img/signup_btn.png" alt="" style="cursor: pointer" />
+				</a>
+			</div>
+		</form>
+	</div>
+	<div class="fluid pop_btn" tabindex="6">
+				<a href="mainpage.html"> <img
+					src="img/signin_btn.png" alt="" style="cursor: pointer" />
+				</a>
+	</div>
+    </body>
+</html>

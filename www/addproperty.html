@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link href="css/sitewatcher.css" rel="stylesheet" type="text/css">
+		<script src="js/jquery-1.10.2.js"></script>
+		<script src="js/jquery-ui-1.10.4.custom.min.js"></script>
+		<!-- End Pop Up Script -->
+		 <title>SiteWatcher</title>
+		<script src="js/respond.min.js"></script>
+		<script src="js/jquery.slicknav.js"></script>
+		<script src="js/sitewatcher.js"></script>
+		<script src="js/jquery.simplemodal-1.4.4.js"></script>
+		<script type="text/javascript">
+        function validateAddPropertyForm() {
+		var NAME_PATTERN  = "^[a-zA-Z0-9\\s\\._\\'-]{2,50}$";
+		$("#formError").empty();
+		var name = $("#name").val();
+		var area = $("#area").val();
+		var stage = $("#stage").val();
+		var siteNumber = $("#siteNumber").val();
+		var developmentName = $("#developmentName").val();
+		var comments = $("#comments").val();
+		var city = $("#city").val();
+		var district = $("#district").val();
+		var state = $("#state").val();
+		if(name == "" || !name.match(NAME_PATTERN)){
+			$("#formError").empty("");
+			$("#formError").html("Please enter a valid PropertyName");
+			return false;
+		}
+		if(area == "" || !area.match(NAME_PATTERN)){
+			$("#formError").empty("");
+			$("#formError").html("Please enter a valid Area");
+			return false;
+		}
+		if(siteNumber == "" || !siteNumber.match(NAME_PATTERN)){
+			$("#formError").empty("");
+			$("#formError").html("Please enter a valid SiteNumber");
+			return false;
+		}
+		if(developmentName == "" || !developmentName.match(NAME_PATTERN)){
+			$("#formError").empty("");
+			$("#formError").html("Please enter a valid DevelopmentName");
+			return false;
+		}
+		if(stage != "" && !stage.match(NAME_PATTERN)){
+			$("#formError").empty("");
+			$("#formError").html("Please enter a valid Stage");
+			return false;
+		}
+		if(city == "" || !city.match(NAME_PATTERN)){
+			$("#formError").empty("");
+			$("#formError").html("Please enter a valid City");
+			return false;
+		}
+		if(district != "" && !district.match(NAME_PATTERN)){
+			$("#formError").empty("");
+			$("#formError").html("Please enter a valid District");
+			return false;
+		}
+		if(state == "" || !state.match(NAME_PATTERN)){
+			$("#formError").empty("");
+			$("#formError").html("Please enter a valid State");
+			return false;
+		}
+		if(comments == "" || !comments.match(NAME_PATTERN)){
+			$("#formError").empty("");
+			$("#formError").html("Please enter a valid comments");
+			return false;
+		}
+		var res = window.jsinterface.addProperty(name, area, siteNumber, developmentName, stage, city, district, state, comments);
+		 $("#name").val("");
+		$("#area").val("");
+		 $("#stage").val("");
+		 $("#siteNumber").val("");
+		 $("#developmentName").val("");
+		$("#comments").val("");
+		 $("#city").val("");
+		 $("#district").val("");
+		$("#state").val("");
+		if(res == "success"){
+			window.location.href = "dashboard.html";
+		} else {
+			window.location.href = "addproperty.html";
+		}
+	}
+    </script>
+    </head>
+    <body>
+	<div id="add_property_divs" class="fluid add_property_div">
+<div class="fluid pop_yellow_head">Add Property </div>
+<form action="" method="POST" id="addPropertyForm"	name="addPropertyForm">
+<div id="formError" class="fluid upload_alert_message"></div>
+	 <div class="fluid form_fields">
+		<div class="fluid edit_name_info">Property Name<span style="color:#FC0004">*</span></div>
+		<input type="text" id="name" name="name"class="fluid textbox_grey_edit" tabindex="1">
+         </div>
+         
+         <div class="fluid form_fields">
+		<div class="fluid edit_name_info">Area<span style="color:#FC0004">*</span></div>
+		<input type="text" id="area" name="area" class="fluid textbox_grey_edit" tabindex="2">
+        </div>
+        
+        <div class="fluid form_fields">
+		<div class="fluid edit_name_info">Site Number<span style="color:#FC0004">*</span></div>
+		<input type="text" id="siteNumber" name="siteNumber"
+			class="fluid textbox_grey_edit" tabindex="3">
+            </div>
+            
+         <div class="fluid form_fields">
+		<div class="fluid edit_name_info">Development Name<span style="color:#FC0004">*</span></div>
+		<input type="text" id="developmentName" name="developmentName"
+			class="fluid textbox_grey_edit" tabindex="4">
+            </div>
+            
+            <div class="fluid form_fields">   
+		<div class="fluid edit_name_info">Stage/Extention</div>
+		<input type="text" id="stage" name="stage"
+			class="fluid textbox_grey_edit" tabindex="5">
+            </div>
+            
+            <div class="fluid form_fields">
+		<div class="fluid edit_name_info">City/Town<span style="color:#FC0004">*</span></div>
+		<input type="text" id="city" name="city"
+			class="fluid textbox_grey_edit" tabindex="6">
+            </div>
+            
+            <div class="fluid form_fields">
+		<div class="fluid edit_name_info">District</div>
+		<input type="text" id="district" name="district"
+			class="fluid textbox_grey_edit" tabindex="7">
+            </div>
+            
+            <div class="fluid form_fields">
+		<div class="fluid edit_name_info">State<span style="color:#FC0004">*</span></div>
+			<select class="fluid textbox_grey_edit" id="state" name="state"  tabindex="8">
+								<option value="">Select State</option>
+								<option value="Andhra Pradesh">Andhra Pradesh</option>
+								<option value="Arunachal Pradesh">Arunachal Pradesh</option>
+								<option value="Assam">Assam</option>
+								<option value="Chhattisgarh">Chhattisgarh</option>
+								<option value="Goa">Goa</option>
+								<option value="Gujarat">Gujarat</option>
+								<option value="Haryana">Haryana</option>
+								<option value="Himachal Pradesh">Himachal Pradesh</option>
+								<option value="Jammu and Kashmir">Jammu and Kashmir</option>
+								<option value="Jharkhand">Jharkhand</option>
+								<option value="Karnataka">Karnataka</option>
+								<option value="Kerala">Kerala</option>
+								<option value="Madhya Pradesh">Madhya Pradesh</option>
+								<option value="Maharashtra">Maharashtra</option>
+								<option value="Manipur">Manipur</option>
+								<option value="Meghalaya">Meghalaya</option>
+								<option value="Mizoram">Mizoram</option>
+								<option value="Nagaland">Nagaland</option>
+								<option value="Odisha">Odisha</option>
+								<option value="Punjab">Punjab</option>
+								<option value="Rajasthan">Rajasthan</option>
+								<option value="Sikkim">Sikkim</option>
+								<option value="Tamil Nadu">Tamil Nadu</option>
+								<option value="Tripura">Tripura</option>
+								<option value="Uttar Pradesh">Uttar Pradesh</option>
+								<option value="Uttarakhand">Uttarakhand</option>
+								<option value="West Bengal">West Bengal</option>
+			</select>
+            </div>
+            
+            
+                        <div class="fluid form_fields1">
+		<div class="fluid edit_name_info1">Comments<span style="color:#FC0004">*</span></div>
+		<input type="text" id="comments" name="comments"
+			class="fluid textbox_grey_edit1" tabindex="8">
+            </div>
+	<div class="fluid submit_dash">
+	<div class="fluid edit_name_info1">
+	<a href="#" onClick='validateAddPropertyForm()' tabindex="10">
+		<img src="img/add.png" alt="" style="cursor: pointer" />
+	</a>
+	</div>
+	</div>
+	</form>
+</div>
+    </body>
+</html>
