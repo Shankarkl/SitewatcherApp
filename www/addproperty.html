@@ -72,21 +72,39 @@
 			$("#formError").html("Please enter a valid comments");
 			return false;
 		}
-		var res = window.jsinterface.addProperty(name, area, siteNumber, developmentName, stage, city, district, state, comments);
-		 $("#name").val("");
-		$("#area").val("");
-		 $("#stage").val("");
-		 $("#siteNumber").val("");
-		 $("#developmentName").val("");
-		$("#comments").val("");
-		 $("#city").val("");
-		 $("#district").val("");
-		$("#state").val("");
-		if(res == "success"){
-			window.location.href = "dashboard.html";
-		} else {
-			window.location.href = "addproperty.html";
-		}
+		$.ajax({
+			type : 'POST',
+			url : 'http://192.168.2.55:8080/androidAddProperty',
+			data : ({
+				name : name,
+				area : area,
+				siteNumber : siteNumber,
+				developmentName : developmentName,
+				stage : stage,
+				city : city,
+				district : district,
+				state : state,
+				comments :comments
+			}),
+			success : function(data) {
+				var returnData = $.parseJSON(data);
+				if (returnData.status) {
+					 $("#name").val("");
+						$("#area").val("");
+						 $("#stage").val("");
+						 $("#siteNumber").val("");
+						 $("#developmentName").val("");
+						$("#comments").val("");
+						 $("#city").val("");
+						 $("#district").val("");
+						$("#state").val("");
+						window.location.href = "dashboard.html";
+				} else {
+					window.location.href = "addproperty.html";
+				}
+			}
+
+		});
 	}
     </script>
     </head>

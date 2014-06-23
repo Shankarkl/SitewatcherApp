@@ -19,61 +19,79 @@
 				$("#propName").empty();
 				$("#latestRecording").empty();
 				$("#priorRecording").empty();
-				
-				var res = window.jsinterface.getProperty();
-				var obj = JSON.parse(res);
-				$("#propertyInfo").show();
-				$.each(obj.dashboardModel.properties,function(key, value) {
-					var propName = value.name;
-					var propertyId = value.propertyId;
-					$("#propName").append('<span id="propertyName" >'+propName+'</span><br/>');
-					 if (!jQuery.isEmptyObject(obj.dashboardModel.recordingsLatestRecording[propertyId])) {
-							var recordingDate =obj.dashboardModel.recordingsLatestRecording[propertyId].recordingDate;
-							var recordingId = obj.dashboardModel.recordingsLatestRecording[propertyId].recordingId;
-							$("#propName").append('<div class="fluid info_details" id="latestRecording"> Latest Recording - '+recordingDate+'<a href="#" onClick="showRecordings('+recordingId+')"><img src="img/play_video.png" alt="" /></a></div>');
-					}
-						$.each(obj.dashboardModel.recordingsAllRecordings[propertyId],function(key, value) {
-							var recordingDate = value.recordingDate;
-							var recordingId = value.recordingId;
-							$("#propName").append('<div class="fluid info_details" id="priorRecording"> Recordings - '+recordingDate+'<a href="#" onClick="showRecordings('+recordingId+')"><img src="img/play_video.png" alt="" /></a></div><br/>');
-						});
+				$.ajax({
+					type : 'GET',
+					url : 'http://192.168.2.55:8080/androidDashboard',
+					data : ({
 						
+					}),
+					success : function(data) {
+						var obj = $.parseJSON(data);
+						if (obj.dashboardModel.status) {
+							$("#propertyInfo").show();
+							$.each(obj.dashboardModel.properties,function(key, value) {
+								var propName = value.name;
+								var propertyId = value.propertyId;
+								$("#propName").append('<span id="propertyName" >'+propName+'</span><br/>');
+								 if (!jQuery.isEmptyObject(obj.dashboardModel.recordingsLatestRecording[propertyId])) {
+										var recordingDate =obj.dashboardModel.recordingsLatestRecording[propertyId].recordingDate;
+										var recordingId = obj.dashboardModel.recordingsLatestRecording[propertyId].recordingId;
+										$("#propName").append('<div class="fluid info_details" id="latestRecording"> Latest Recording - '+recordingDate+'<a href="#" onClick="showRecordings('+recordingId+')"><img src="img/play_video.png" alt="" /></a></div>');
+								}
+									$.each(obj.dashboardModel.recordingsAllRecordings[propertyId],function(key, value) {
+										var recordingDate = value.recordingDate;
+										var recordingId = value.recordingId;
+										$("#propName").append('<div class="fluid info_details" id="priorRecording"> Recordings - '+recordingDate+'<a href="#" onClick="showRecordings('+recordingId+')"><img src="img/play_video.png" alt="" /></a></div><br/>');
+									});
+									
+							});
+						}
+					}
+
 				});
 				
 			}
 			function showRecordings(recordingId){
 				$("#view_image_div").empty();
 				$("#view_image_div1").empty();
-				var res = window.jsinterface.getPropertyRecordings(recordingId);
-				var returnData = JSON.parse(res);
-				if (returnData.status) {
-					var properties = returnData.recordingInfo;
-					var count = 1;
-					var firstUrl ='';
-					var firstImageType ='';
-					$.each(properties,	function(key, value) {
-						var imageType = value.recordingTypeId;
-						var url = value.fileLocation;
-						var isActive = value.isActive;
-						if(count == 1){
-							firstUrl = url;
-							firstImageType = imageType;
+				$.ajax({
+					type : 'POST',
+					url : 'http://192.168.2.55:8080/androidGetRecordings',
+					data : ({
+						recordingId : recordingId
+					}),
+					success : function(data) {
+						var returnData = $.parseJSON(data);
+						if (returnData.status) {
+							var properties = returnData.recordingInfo;
+							var count = 1;
+							var firstUrl ='';
+							var firstImageType ='';
+							$.each(properties,	function(key, value) {
+								var imageType = value.recordingTypeId;
+								var url = value.fileLocation;
+								var isActive = value.isActive;
+								if(count == 1){
+									firstUrl = url;
+									firstImageType = imageType;
+								}
+								if (isActive) {
+									 if (imageType == 1	|| imageType == 2 || imageType == 3 || imageType == 4 || imageType == 5) {
+										 $("#view_image_div").append('<a href="#" onClick="showImage('+imageType+')"><img src="img/canstockphoto0297723_comp.jpg" width="60" height="60" border="1" style="border: 1" /><h5>Picture '+count+'</h5></a>');
+									} else {
+										$("#view_image_div1").append('<a href="#" onClick="showImage('+imageType+')"><video src="img/small.ogv" width="60" height="60" border="1" style="border: 1" /><h5>Video</h5></a>');
+									} 
+								}
+							$("#view_thumbNails").append('<img  id="imageTagId" src="" alt="" ></img>');
+							$("#view_thumbNails").append('<video id="videoTagId" style="display: none" width="550" controls="" autoplay></video>');
+							dashboardModalControl = renderModal('view_thumbNails', 'auto', 400);
+							showImage(firstImageType);
+							});
+							
 						}
-						if (isActive) {
-							 if (imageType == 1	|| imageType == 2 || imageType == 3 || imageType == 4 || imageType == 5) {
-								 $("#view_image_div").append('<a href="#" onClick="showImage('+imageType+')"><img src="img/canstockphoto0297723_comp.jpg" width="60" height="60" border="1" style="border: 1" /><h5>Picture '+count+'</h5></a>');
-							} else {
-								$("#view_image_div1").append('<a href="#" onClick="showImage('+imageType+')"><video src="img/small.ogv" width="60" height="60" border="1" style="border: 1" /><h5>Video</h5></a>');
-							} 
-						}
-					$("#view_thumbNails").append('<img  id="imageTagId" src="" alt="" ></img>');
-					$("#view_thumbNails").append('<video id="videoTagId" style="display: none" width="550" controls="" autoplay></video>');
-					dashboardModalControl = renderModal('view_thumbNails', 'auto', 400);
-					showImage(firstImageType);
-					});
-					
-				}
-				
+					}
+
+				});
 			}
 			function showImage(imageType) {
 				if (imageType == 6) {

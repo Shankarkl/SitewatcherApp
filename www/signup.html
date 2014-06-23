@@ -72,20 +72,32 @@
 					"Please ensure to accept terms and conditions.");
 			return false;
 		}
-	 var res = window.jsinterface.signUpUser(firstName, lastName, email, password);
-	 $("#firstName").val("");
-	 $("#lastName").val("");
-	 $("#email").val("");
-	 $("#password").val("");
-	 $('#termsAccepted').is(':Unchecked');
-	 alert(res);
-	 if(res == "success"){
-			window.location.href = "mainpage.html";
-		} else {
-			window.location.href = "signup.html";
-			$("#formError1").show();
-			$("#formError1").html("User Registration is failed please try again.");
-		}
+		$.ajax({
+			type : 'POST',
+			url : 'http://192.168.2.55:8080/androidUserSignUp',
+			data : ({
+				firstName : firstName,
+				lastName : lastName,
+				email : email,
+				password : password
+			}),
+			success : function(data) {
+				var returnData = $.parseJSON(data);
+				if (returnData.status) {
+					 $("#firstName").val("");
+					 $("#lastName").val("");
+					 $("#email").val("");
+					 $("#password").val("");
+					 $('#termsAccepted').is(':Unchecked');
+					 window.location.href = "mainpage.html";
+				} else {
+					window.location.href = "signup.html";
+					$("#formError1").show();
+					$("#formError1").html("User Registration is failed please try again.");
+				}
+			}
+
+		});
 	}
 	</script>	
     </head>

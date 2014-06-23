@@ -41,16 +41,27 @@
 			$("#formError").html("Please enter a valid password.");
 			return false;
 		}
-		var res = window.jsinterface.authenticateUser(j_username, j_password);
-		$("#j_username").val("");
-		 $("#j_password").val("");
-		if(res == "success"){
-			window.location.href = "dashboard.html";
-		} else {
-			window.location.href = "mainpage.html";
-			$("#formError").show();
-			$("#formError").html("Please enter a valid User name and password.");
-		}
+		$.ajax({
+			type : 'POST',
+			url : 'http://192.168.2.55:8080/androidUserAuth',
+			data : ({
+				username : j_username,
+				password : j_password
+			}),
+			success : function(data) {
+				var returnData = $.parseJSON(data);
+				if (returnData.status) {
+					$("#j_username").val("");
+					 $("#j_password").val("");
+					window.location.href = "dashboard.html";
+				} else {
+					window.location.href = "mainpage.html";
+					$("#formError").show();
+					$("#formError").html("Please enter a valid User name and password.");
+				}
+			}
+
+		});
 	}
 	</script>	
     </head>
